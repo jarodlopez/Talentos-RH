@@ -1,7 +1,13 @@
 /**
- * Firebase Client SDK.
- * Se usa en el navegador (componentes cliente) para autenticación
- * y lecturas permitidas por las Security Rules.
+ * Firebase Client SDK (inicialización perezosa / lazy).
+ *
+ * Se usa en el navegador (componentes cliente) para autenticación y
+ * lecturas permitidas por las Security Rules.
+ *
+ * ¿Por qué lazy? Si inicializáramos Auth/Firestore al importar el módulo,
+ * getAuth() se ejecutaría también en el servidor durante el `next build`
+ * y fallaría si aún no hay variables de entorno. Con getters perezosos,
+ * la conexión solo ocurre cuando el navegador realmente la necesita.
  *
  * IMPORTANTE: nunca hagas escrituras de datos sensibles (scores,
  * evaluaciones) desde aquí. Eso vive en el servidor con Admin SDK.
@@ -19,9 +25,35 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Evita reinicializar en hot-reload / múltiples imports.
-const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+/**
+ * True solo si las variables mínimas de Firebase están presentes.
+ * Útil para mostrar mensajes amigables cuando aún no se han configurado
+ * las variables de entorno en Vercel.
+ */
+export const isFirebaseConfigured = Boolean(
+  firebaseConfig.apiKey && firebaseConfig.projectId
+);
 
-export const auth: Auth = getAuth(app);
-export const db: Firestore = getFirestore(app);
-export default app;
+let cachedApp: FirebaseApp | null = null;
+let cachedAuth: Auth | null = null;
+let cachedDb: Firestore | null = null;
+
+function getFirebaseApp(): FirebaseApp {
+  if (cachedApp) return cachedApp;
+  cachedApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  return cachedApp;
+}
+
+/** Devuelve la instancia de Auth, inicializándola en el primer uso. */
+export function getFirebaseAuth(): Auth {
+  if (cachedAuth) return cachedAuth;
+  cachedAuth = getAuth(getFirebaseApp());
+  return cachedAuth;
+}
+
+/** Devuelve la instancia de Firestore, inicializándola en el primer uso. */
+export function getDb(): Firestore {
+  if (cachedDb) return cachedDb;
+  cachedDb = getFirestore(getFirebaseApp());
+  return cachedDb;
+}

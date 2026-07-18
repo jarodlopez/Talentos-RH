@@ -145,10 +145,18 @@ export function AuthForm({ mode }: { mode: Mode }) {
               <RoleCard
                 active={role === "employer"}
                 title="Empleador"
-                subtitle="Publico vacantes"
+                subtitle="Contrato talento"
                 onClick={() => setRole("employer")}
               />
             </div>
+
+            {role === "employer" && (
+              <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                Las cuentas de empleador pasan por una verificación antes de poder
+                publicar vacantes. Podrás preparar el perfil de tu empresa de
+                inmediato.
+              </p>
+            )}
 
             <Field
               label={role === "employer" ? "Nombre de la empresa" : "Nombre completo"}

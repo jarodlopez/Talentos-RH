@@ -72,10 +72,17 @@ export default function CompleteProfilePage() {
           <RoleCard
             active={selected === "employer"}
             title="Empleador"
-            subtitle="Publico vacantes"
+            subtitle="Contrato talento"
             onClick={() => setSelected("employer")}
           />
         </div>
+
+        {selected === "employer" && (
+          <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
+            Las cuentas de empleador pasan por una verificación antes de poder
+            publicar vacantes.
+          </p>
+        )}
 
         {error && (
           <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">

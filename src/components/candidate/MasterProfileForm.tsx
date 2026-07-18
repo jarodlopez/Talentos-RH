@@ -6,6 +6,7 @@
  * + educación, calcula la completitud y guarda en Firestore.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
@@ -199,8 +200,28 @@ export function MasterProfileForm() {
       }}
       className="flex flex-col gap-6"
     >
+      {/* Banner de éxito con siguientes pasos */}
+      {savedAt && !error && (
+        <div className="animate-fade-in-up rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+          <p className="font-semibold text-emerald-800">¡Perfil guardado! ✓</p>
+          <p className="mt-1 text-sm text-emerald-700">
+            {completeness === 100
+              ? "Tu perfil está completo. Ya puedes aplicar a vacantes."
+              : `Tu perfil está al ${completeness}%. Puedes seguir editando o empezar a aplicar.`}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/jobs" className="btn-primary">
+              Explorar vacantes
+            </Link>
+            <Link href="/candidate/dashboard" className="btn-secondary">
+              Ir a mi panel
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Barra de completitud */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="card p-4">
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="font-medium text-gray-700">Completitud del perfil</span>
           <span className="font-semibold text-brand-700">{completeness}%</span>
@@ -368,18 +389,17 @@ export function MasterProfileForm() {
       </Card>
 
       {/* Guardar */}
-      <div className="sticky bottom-0 flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-soft backdrop-blur">
         <div className="text-sm">
           {error && <span className="text-red-600">{error}</span>}
           {!error && savedAt && (
-            <span className="text-emerald-600">Perfil guardado ✓</span>
+            <span className="font-medium text-emerald-600">Cambios guardados ✓</span>
+          )}
+          {!error && !savedAt && (
+            <span className="text-slate-400">Recuerda guardar tus cambios</span>
           )}
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-brand-600 px-6 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
-        >
+        <button type="submit" disabled={saving} className="btn-primary px-6 py-3">
           {saving ? "Guardando…" : "Guardar perfil"}
         </button>
       </div>
@@ -399,8 +419,8 @@ function updateItem<T>(
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5">
-      <h2 className="mb-4 font-semibold text-gray-900">{title}</h2>
+    <section className="card p-5 sm:p-6">
+      <h2 className="mb-4 font-semibold text-slate-900">{title}</h2>
       {children}
     </section>
   );
@@ -420,14 +440,14 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+    <label className="flex flex-col gap-1.5">
+      <span className="label">{label}</span>
       <input
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="input"
       />
     </label>
   );
@@ -445,14 +465,14 @@ function TextArea({
   placeholder?: string;
 }) {
   return (
-    <label className="mt-4 flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+    <label className="mt-4 flex flex-col gap-1.5">
+      <span className="label">{label}</span>
       <textarea
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="input"
       />
     </label>
   );

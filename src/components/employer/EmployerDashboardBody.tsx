@@ -99,10 +99,10 @@ function LinkCard({
   return (
     <Link
       href={href}
-      className="rounded-xl border border-gray-200 bg-white p-5 transition hover:border-brand-400 hover:shadow-sm"
+      className="card group p-5 transition hover:border-brand-300 hover:shadow-soft"
     >
-      <h2 className="font-semibold text-gray-900">{title}</h2>
-      <p className="mt-1 text-sm text-gray-500">{desc}</p>
+      <h2 className="font-semibold text-slate-900 group-hover:text-brand-700">{title}</h2>
+      <p className="mt-1 text-sm text-slate-500">{desc}</p>
     </Link>
   );
 }
@@ -117,13 +117,9 @@ function Card({
   disabled?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-xl border border-gray-200 bg-white p-5 ${
-        disabled ? "opacity-50" : ""
-      }`}
-    >
-      <h2 className="font-semibold text-gray-900">{title}</h2>
-      <p className="mt-1 text-sm text-gray-500">{desc}</p>
+    <div className={`card p-5 ${disabled ? "opacity-50" : ""}`}>
+      <h2 className="font-semibold text-slate-900">{title}</h2>
+      <p className="mt-1 text-sm text-slate-500">{desc}</p>
     </div>
   );
 }

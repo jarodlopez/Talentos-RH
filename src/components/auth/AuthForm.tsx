@@ -122,11 +122,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-      <h1 className="mb-1 text-2xl font-bold">
+    <div className="card mx-auto w-full max-w-md p-8">
+      <h1 className="mb-1 text-2xl font-bold text-slate-900">
         {isRegister ? "Crear cuenta" : "Iniciar sesión"}
       </h1>
-      <p className="mb-6 text-sm text-gray-500">
+      <p className="mb-6 text-sm text-slate-500">
         {isRegister
           ? "Regístrate como candidato o empleador."
           : "Bienvenido de nuevo a Talentos-RH."}
@@ -189,11 +189,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-2 rounded-lg bg-brand-600 px-4 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary mt-2 w-full py-3">
           {submitting
             ? "Procesando…"
             : isRegister
@@ -212,7 +208,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         type="button"
         onClick={handleGoogle}
         disabled={googleLoading || submitting}
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+        className="btn-secondary w-full py-3"
       >
         <GoogleIcon />
         {googleLoading ? "Conectando…" : "Continuar con Google"}
@@ -253,14 +249,14 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+    <label className="flex flex-col gap-1.5">
+      <span className="label">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="input"
       />
     </label>
   );

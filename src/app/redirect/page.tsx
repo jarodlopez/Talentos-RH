@@ -24,8 +24,10 @@ export default function RedirectPage() {
       router.replace("/employer/dashboard");
     } else if (role === "candidate") {
       router.replace("/candidate/dashboard");
+    } else {
+      // Hay usuario pero sin rol (p. ej. login con Google nuevo).
+      router.replace("/complete-profile");
     }
-    // Si el rol aún es null pero hay usuario, seguimos esperando.
   }, [loading, firebaseUser, role, router]);
 
   return (

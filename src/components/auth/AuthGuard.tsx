@@ -26,13 +26,18 @@ export function AuthGuard({
       router.replace("/login");
       return;
     }
-    if (role && userRole && userRole !== role) {
+    if (!userRole) {
+      // Sesión sin rol (login con Google nuevo): completar perfil.
+      router.replace("/complete-profile");
+      return;
+    }
+    if (role && userRole !== role) {
       // Rol equivocado: lo mandamos a su propio espacio.
       router.replace(userRole === "employer" ? "/employer/dashboard" : "/candidate/dashboard");
     }
   }, [loading, firebaseUser, userRole, role, router]);
 
-  if (loading || !firebaseUser || (role && userRole !== role)) {
+  if (loading || !firebaseUser || !userRole || (role && userRole !== role)) {
     return (
       <main className="flex min-h-screen items-center justify-center">
         <p className="text-gray-500">Cargando…</p>

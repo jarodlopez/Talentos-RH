@@ -5,12 +5,11 @@
  *
  * Escucha los cambios de autenticación de Firebase, carga el documento
  * users/{uid} para conocer el rol, y expone helpers para registrar,
- * iniciar y cerrar sesión.
+ * iniciar sesión (email/password o Google) y cerrar sesión.
  *
  * Además sincroniza dos cookies ligeras (tp_session, tp_role) que el
- * middleware usa para hacer un "gating" rápido de rutas. La seguridad
- * REAL de los datos vive en las Firestore Security Rules, no en estas
- * cookies (que son solo para UX de navegación).
+ * proxy usa para hacer un "gating" rápido de rutas. La seguridad REAL de
+ * los datos vive en las Firestore Security Rules, no en estas cookies.
  */
 import {
   createContext,
@@ -22,8 +21,10 @@ import {
 } from "react";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
   type User,
@@ -33,6 +34,8 @@ import { getDb, getFirebaseAuth } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import type { AppUser, UserRole } from "@/types";
 
+type PublicRole = Exclude<UserRole, "admin">;
+
 interface AuthContextValue {
   firebaseUser: User | null;
   appUser: AppUser | null;
@@ -40,6 +43,10 @@ interface AuthContextValue {
   loading: boolean;
   register: (params: RegisterParams) => Promise<AppUser>;
   login: (email: string, password: string) => Promise<void>;
+  /** Inicia sesión con Google. Devuelve si el usuario aún no tiene rol asignado. */
+  loginWithGoogle: () => Promise<{ needsRole: boolean }>;
+  /** Crea el perfil del usuario actual con el rol elegido (flujo Google nuevo). */
+  assignRole: (role: PublicRole) => Promise<AppUser>;
   logout: () => Promise<void>;
 }
 
@@ -47,7 +54,7 @@ interface RegisterParams {
   email: string;
   password: string;
   displayName: string;
-  role: Exclude<UserRole, "admin">; // el registro público solo crea candidate/employer
+  role: PublicRole; // el registro público solo crea candidate/employer
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -58,6 +65,66 @@ function setCookie(name: string, value: string, maxAgeSeconds = 60 * 60) {
 }
 function clearCookie(name: string) {
   document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+}
+
+/**
+ * Crea el documento users/{uid} + el documento de perfil (candidate/employer).
+ * Reutilizado por el registro con email y por el alta con Google.
+ */
+async function createUserDocuments(
+  user: User,
+  displayName: string,
+  email: string,
+  role: PublicRole
+): Promise<AppUser> {
+  const db = getDb();
+
+  const baseUser: Omit<AppUser, "createdAt" | "lastLoginAt"> = {
+    uid: user.uid,
+    email,
+    displayName,
+    role,
+    photoURL: user.photoURL ?? null,
+  };
+
+  await setDoc(doc(db, COLLECTIONS.USERS, user.uid), {
+    ...baseUser,
+    createdAt: serverTimestamp(),
+    lastLoginAt: serverTimestamp(),
+  });
+
+  if (role === "candidate") {
+    await setDoc(doc(db, COLLECTIONS.CANDIDATES, user.uid), {
+      uid: user.uid,
+      fullName: displayName,
+      headline: "",
+      location: "",
+      phone: "",
+      summary: "",
+      skills: [],
+      experience: [],
+      education: [],
+      integrityTest: null,
+      profileCompleteness: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } else {
+    await setDoc(doc(db, COLLECTIONS.EMPLOYERS, user.uid), {
+      uid: user.uid,
+      companyName: displayName,
+      companyLogo: null,
+      industry: "",
+      website: "",
+      description: "",
+      contactEmail: email,
+      verified: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  return baseUser as AppUser;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -88,6 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = await user.getIdToken();
         setCookie("tp_session", token);
         if (data?.role) setCookie("tp_role", data.role);
+        else clearCookie("tp_role");
       } catch {
         setAppUser(null);
       } finally {
@@ -105,63 +173,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     role,
   }: RegisterParams): Promise<AppUser> {
     const auth = getFirebaseAuth();
-    const db = getDb();
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    const { user } = cred;
+    await updateProfile(cred.user, { displayName });
 
-    await updateProfile(user, { displayName });
+    const created = await createUserDocuments(cred.user, displayName, email, role);
 
-    // 1) Documento users/{uid} — el "login" común a todos.
-    const newUser: Omit<AppUser, "createdAt" | "lastLoginAt"> = {
-      uid: user.uid,
-      email,
-      displayName,
-      role,
-      photoURL: null,
-    };
-    await setDoc(doc(db, COLLECTIONS.USERS, user.uid), {
-      ...newUser,
-      createdAt: serverTimestamp(),
-      lastLoginAt: serverTimestamp(),
-    });
-
-    // 2) Documento de perfil segun el rol (stub inicial vacio).
-    if (role === "candidate") {
-      await setDoc(doc(db, COLLECTIONS.CANDIDATES, user.uid), {
-        uid: user.uid,
-        fullName: displayName,
-        headline: "",
-        location: "",
-        phone: "",
-        summary: "",
-        skills: [],
-        experience: [],
-        education: [],
-        integrityTest: null,
-        profileCompleteness: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    } else {
-      await setDoc(doc(db, COLLECTIONS.EMPLOYERS, user.uid), {
-        uid: user.uid,
-        companyName: displayName,
-        companyLogo: null,
-        industry: "",
-        website: "",
-        description: "",
-        contactEmail: email,
-        verified: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
-
-    const token = await user.getIdToken();
+    const token = await cred.user.getIdToken();
     setCookie("tp_session", token);
     setCookie("tp_role", role);
-
-    const created = { ...newUser } as AppUser;
     setAppUser(created);
     return created;
   }
@@ -169,6 +188,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(email: string, password: string): Promise<void> {
     await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
     // onAuthStateChanged se encarga de cargar el appUser y las cookies.
+  }
+
+  async function loginWithGoogle(): Promise<{ needsRole: boolean }> {
+    const auth = getFirebaseAuth();
+    const db = getDb();
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+
+    const snap = await getDoc(doc(db, COLLECTIONS.USERS, cred.user.uid));
+    if (snap.exists()) {
+      const data = snap.data() as AppUser;
+      setAppUser(data);
+      const token = await cred.user.getIdToken();
+      setCookie("tp_session", token);
+      setCookie("tp_role", data.role);
+      return { needsRole: false };
+    }
+
+    // Usuario de Google nuevo: aún no tiene rol.
+    return { needsRole: true };
+  }
+
+  async function assignRole(role: PublicRole): Promise<AppUser> {
+    const auth = getFirebaseAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("No hay usuario autenticado.");
+
+    const displayName = user.displayName ?? user.email ?? "Usuario";
+    const email = user.email ?? "";
+
+    const created = await createUserDocuments(user, displayName, email, role);
+
+    const token = await user.getIdToken();
+    setCookie("tp_session", token);
+    setCookie("tp_role", role);
+    setAppUser(created);
+    return created;
   }
 
   async function logout(): Promise<void> {
@@ -183,6 +239,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       register,
       login,
+      loginWithGoogle,
+      assignRole,
       logout,
     }),
     [firebaseUser, appUser, loading]

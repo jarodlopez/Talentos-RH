@@ -14,10 +14,16 @@ export default function HomePage() {
         una sola pregunta situacional. La IA evalúa tu perfil y te da feedback
         instantáneo.
       </p>
-      <div className="flex gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
+        <Link
+          href="/jobs"
+          className="rounded-lg bg-brand-600 px-5 py-2.5 font-medium text-white transition hover:bg-brand-700"
+        >
+          Ver vacantes
+        </Link>
         <Link
           href="/login"
-          className="rounded-lg bg-brand-600 px-5 py-2.5 font-medium text-white transition hover:bg-brand-700"
+          className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50"
         >
           Iniciar sesión
         </Link>

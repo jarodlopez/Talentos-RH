@@ -77,9 +77,15 @@ service cloud.firestore {
     }
 
     // --- applications/{applicationId} ---
-    // Se definirán en el bloque de aplicaciones.
     match /applications/{applicationId} {
-      allow read, write: if false;
+      // Lectura: el candidato dueño o el empleador de la vacante.
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.candidateId ||
+        request.auth.uid == resource.data.employerId
+      );
+      // Escritura: solo el servidor (Admin SDK), nunca el cliente.
+      // Así garantizamos snapshot íntegro, no duplicados y evaluación IA.
+      allow write: if false;
     }
   }
 }

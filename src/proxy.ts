@@ -12,6 +12,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const CANDIDATE_PREFIX = "/candidate";
 const EMPLOYER_PREFIX = "/employer";
+const ADMIN_PREFIX = "/admin";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,8 +21,9 @@ export function proxy(request: NextRequest) {
 
   const isCandidateArea = pathname.startsWith(CANDIDATE_PREFIX);
   const isEmployerArea = pathname.startsWith(EMPLOYER_PREFIX);
+  const isAdminArea = pathname.startsWith(ADMIN_PREFIX);
 
-  if (!isCandidateArea && !isEmployerArea) {
+  if (!isCandidateArea && !isEmployerArea && !isAdminArea) {
     return NextResponse.next();
   }
 
@@ -30,6 +32,12 @@ export function proxy(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // El área de admin se valida de verdad en el servidor (/api/admin/me,
+  // token verificado + allowlist). Aquí solo exigimos sesión.
+  if (isAdminArea) {
+    return NextResponse.next();
   }
 
   // Con sesión pero rol equivocado -> a su propia área.
@@ -44,5 +52,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/candidate/:path*", "/employer/:path*"],
+  matcher: ["/candidate/:path*", "/employer/:path*", "/admin/:path*"],
 };

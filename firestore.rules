@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// ============================================================
+//  Talentos-RH — Firestore Security Rules
+//
+//  Principios:
+//  - Cada usuario gestiona SOLO sus propios documentos.
+//  - Un empleador NO puede auto-verificarse (campo verified).
+//  - Nadie puede auto-cambiarse el rol.
+//  - Las acciones de admin pasan por el Admin SDK (servidor), que
+//    BYPASSEA estas reglas; por eso aquí no hace falta dar acceso
+//    especial al admin desde el cliente.
+// ============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // --- users/{uid} ---
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      // Al crear, el rol solo puede ser candidate o employer (no admin).
+      allow create: if isOwner(uid)
+        && request.resource.data.role in ['candidate', 'employer'];
+      // Al actualizar, el usuario NO puede cambiar su propio rol.
+      allow update: if isOwner(uid)
+        && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+
+    // --- candidates/{uid} ---
+    match /candidates/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid);
+      allow delete: if false;
+    }
+
+    // --- employers/{uid} ---
+    match /employers/{uid} {
+      // Los perfiles de empresa pueden ser visibles para usuarios autenticados
+      // (necesario para mostrar la empresa en las vacantes, más adelante).
+      allow read: if isSignedIn();
+      // Al crear, verified DEBE ser false (nadie nace verificado).
+      allow create: if isOwner(uid)
+        && request.resource.data.verified == false;
+      // Al actualizar, el empleador NO puede tocar su propio verified.
+      allow update: if isOwner(uid)
+        && request.resource.data.verified == resource.data.verified;
+      allow delete: if false;
+    }
+
+    // --- jobPosts / applications ---
+    // Se definirán en el bloque de vacantes. Por ahora, denegado desde
+    // el cliente (aún no existen esas funciones).
+    match /jobPosts/{jobId} {
+      allow read, write: if false;
+    }
+    match /applications/{applicationId} {
+      allow read, write: if false;
+    }
+  }
+}

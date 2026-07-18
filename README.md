@@ -42,5 +42,14 @@ Ver definiciones completas en [`src/types/index.ts`](src/types/index.ts).
 
 - [x] **Bloque 1** — Feedback técnico, estructura y esquema de datos
 - [x] **Bloque 2** — Inicialización del proyecto (Next.js + Firebase + tipos)
-- [ ] **Bloque 3** — Autenticación y selección de rol
+- [x] **Bloque 3** — Autenticación (email/password + Google) y selección de rol
+- [x] **Bloque 4** — Super Admin (gestión de usuarios) + Security Rules
 - [ ] Bloques siguientes — Master Profile, vacantes, aplicaciones y evaluación IA
+
+## Seguridad
+
+- Las acciones de administración pasan por API Routes server-side con el
+  Admin SDK; el rol de admin se valida contra una allowlist tras verificar
+  el token (`src/lib/auth/`).
+- Las reglas de Firestore están en [`firestore.rules`](firestore.rules) y
+  deben publicarse en Firebase Console (Firestore → Rules).

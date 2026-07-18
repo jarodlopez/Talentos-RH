@@ -6,6 +6,7 @@
  * y bloquea la publicación de vacantes mientras la cuenta no esté aprobada.
  */
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
@@ -63,15 +64,19 @@ export function EmployerDashboardBody() {
       )}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
-        <Card
-          title="Mis vacantes"
-          desc={
-            verified
-              ? "Crea y administra tus publicaciones."
-              : "Disponible cuando tu cuenta sea verificada."
-          }
-          disabled={!verified}
-        />
+        {verified ? (
+          <LinkCard
+            href="/employer/jobs"
+            title="Mis vacantes"
+            desc="Crea y administra tus publicaciones."
+          />
+        ) : (
+          <Card
+            title="Mis vacantes"
+            desc="Disponible cuando tu cuenta sea verificada."
+            disabled
+          />
+        )}
         <Card
           title="Candidatos"
           desc="Revisa aplicaciones evaluadas por IA."
@@ -79,6 +84,26 @@ export function EmployerDashboardBody() {
         />
       </div>
     </main>
+  );
+}
+
+function LinkCard({
+  href,
+  title,
+  desc,
+}: {
+  href: string;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="rounded-xl border border-gray-200 bg-white p-5 transition hover:border-brand-400 hover:shadow-sm"
+    >
+      <h2 className="font-semibold text-gray-900">{title}</h2>
+      <p className="mt-1 text-sm text-gray-500">{desc}</p>
+    </Link>
   );
 }
 

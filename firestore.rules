@@ -22,6 +22,13 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    // El empleador actual está verificado (candado anti vacantes falsas).
+    function isVerifiedEmployer() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/employers/$(request.auth.uid))
+        && get(/databases/$(database)/documents/employers/$(request.auth.uid)).data.verified == true;
+    }
+
     // --- users/{uid} ---
     match /users/{uid} {
       allow read: if isOwner(uid);
@@ -55,12 +62,22 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // --- jobPosts / applications ---
-    // Se definirán en el bloque de vacantes. Por ahora, denegado desde
-    // el cliente (aún no existen esas funciones).
+    // --- jobPosts/{jobId} ---
     match /jobPosts/{jobId} {
-      allow read, write: if false;
+      // Vacantes publicadas: lectura pública. Borradores: solo su dueño.
+      allow read: if resource.data.status == 'open'
+        || (isSignedIn() && resource.data.employerId == request.auth.uid);
+      // Crear: solo el propio empleador verificado.
+      allow create: if isVerifiedEmployer()
+        && request.resource.data.employerId == request.auth.uid
+        && request.resource.data.status in ['open', 'draft', 'closed'];
+      // Editar/borrar: solo el dueño verificado.
+      allow update, delete: if isVerifiedEmployer()
+        && resource.data.employerId == request.auth.uid;
     }
+
+    // --- applications/{applicationId} ---
+    // Se definirán en el bloque de aplicaciones.
     match /applications/{applicationId} {
       allow read, write: if false;
     }

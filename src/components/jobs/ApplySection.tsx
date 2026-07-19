@@ -88,10 +88,10 @@ export function ApplySection({ jobId }: { jobId: string }) {
   if (!firebaseUser) {
     return (
       <Box>
-        <p className="mb-3 text-sm text-gray-600">Inicia sesión como candidato para aplicar.</p>
+        <p className="mb-3 text-sm text-slate-400">Inicia sesión como candidato para aplicar.</p>
         <Link
           href="/login"
-          className="inline-block rounded-lg bg-brand-600 px-5 py-2.5 font-medium text-white hover:bg-brand-700"
+          className="inline-block rounded-lg bg-[#c8f04a] px-5 py-2.5 font-semibold text-slate-900 hover:brightness-95"
         >
           Iniciar sesión
         </Link>
@@ -103,7 +103,7 @@ export function ApplySection({ jobId }: { jobId: string }) {
   if (role !== "candidate") {
     return (
       <Box>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-slate-400">
           Solo las cuentas de candidato pueden aplicar a vacantes.
         </p>
       </Box>
@@ -113,10 +113,10 @@ export function ApplySection({ jobId }: { jobId: string }) {
   if (stage === "done" || alreadyApplied) {
     return (
       <Box>
-        <p className="font-medium text-emerald-700">¡Aplicación enviada! ✓</p>
-        <p className="mt-1 text-sm text-gray-600">
+        <p className="font-medium text-emerald-400">¡Aplicación enviada! ✓</p>
+        <p className="mt-1 text-sm text-slate-400">
           Puedes ver su estado en{" "}
-          <Link href="/candidate/applications" className="text-brand-600 hover:underline">
+          <Link href="/candidate/applications" className="text-[#c8f04a] hover:underline">
             Mis aplicaciones
           </Link>
           .
@@ -130,7 +130,7 @@ export function ApplySection({ jobId }: { jobId: string }) {
       {stage === "idle" && (
         <button
           onClick={startApply}
-          className="rounded-lg bg-brand-600 px-6 py-2.5 font-medium text-white transition hover:bg-brand-700"
+          className="rounded-lg bg-[#c8f04a] px-6 py-2.5 font-semibold text-slate-900 transition hover:brightness-95"
         >
           Aplicar a esta vacante
         </button>
@@ -138,30 +138,34 @@ export function ApplySection({ jobId }: { jobId: string }) {
 
       {(stage === "questioning" || stage === "submitting") && question && (
         <div>
-          <p className="mb-1 text-sm font-medium text-gray-700">Pregunta situacional</p>
-          <p className="mb-3 rounded-lg bg-gray-50 p-3 text-gray-800">{question.text}</p>
+          <p className="mb-1 text-sm font-medium text-slate-300">Pregunta situacional</p>
+          <p className="mb-3 rounded-lg bg-slate-800 p-3 text-slate-100">{question.text}</p>
           <textarea
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             rows={6}
             placeholder="Escribe tu respuesta…"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-white outline-none placeholder:text-slate-500 focus:border-[#c8f04a]"
           />
           <button
             onClick={submit}
             disabled={stage === "submitting"}
-            className="mt-3 rounded-lg bg-brand-600 px-6 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
+            className="mt-3 rounded-lg bg-[#c8f04a] px-6 py-2.5 font-semibold text-slate-900 transition hover:brightness-95 disabled:opacity-60"
           >
             {stage === "submitting" ? "Enviando…" : "Enviar aplicación"}
           </button>
         </div>
       )}
 
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
     </Box>
   );
 }
 
 function Box({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-xl border border-gray-200 bg-white p-5">{children}</div>;
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-slate-200">
+      {children}
+    </div>
+  );
 }

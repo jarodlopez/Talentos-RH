@@ -1,9 +1,8 @@
 "use client";
 
 /**
- * Barra de navegación de la app autenticada.
- * Muestra links según el rol, resalta la ruta activa e incluye acceso a
- * admin (si aplica) y menú de usuario con cierre de sesión.
+ * Barra de navegación (tema oscuro, acento lima).
+ * Links según el rol, ruta activa resaltada, acceso admin y logout.
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -17,9 +16,8 @@ interface NavItem {
 }
 
 const CANDIDATE_NAV: NavItem[] = [
-  { href: "/candidate/dashboard", label: "Panel" },
+  { href: "/candidate/dashboard", label: "Vacantes" },
   { href: "/candidate/profile", label: "Mi perfil" },
-  { href: "/jobs", label: "Vacantes" },
   { href: "/candidate/applications", label: "Mis aplicaciones" },
 ];
 
@@ -54,10 +52,10 @@ export function DashboardHeader({ area }: { area?: string }) {
   const initial = name.charAt(0).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-950/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm text-white">
+        <Link href="/" className="flex items-center gap-2 font-bold text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#c8f04a] text-sm text-slate-900">
             T
           </span>
           <span className="hidden sm:inline">Talentos-RH</span>
@@ -73,8 +71,8 @@ export function DashboardHeader({ area }: { area?: string }) {
                 href={item.href}
                 className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${
                   active
-                    ? "bg-brand-50 text-brand-700"
-                    : "text-slate-600 hover:bg-slate-100"
+                    ? "bg-[#c8f04a] text-slate-900"
+                    : "text-slate-300 hover:bg-slate-800"
                 }`}
               >
                 {item.label}
@@ -87,22 +85,17 @@ export function DashboardHeader({ area }: { area?: string }) {
           {isAdmin && (
             <Link
               href="/admin"
-              className="hidden rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 sm:inline-block"
+              className="hidden rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800 sm:inline-block"
             >
               Admin
             </Link>
           )}
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 py-1 pl-1 pr-1 sm:pr-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
-              {initial}
-            </span>
-            <span className="hidden max-w-[120px] truncate text-sm text-slate-700 sm:inline">
-              {name}
-            </span>
-          </div>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c8f04a] text-xs font-bold text-slate-900">
+            {initial}
+          </span>
           <button
             onClick={handleLogout}
-            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-white"
             title="Cerrar sesión"
             aria-label="Cerrar sesión"
           >

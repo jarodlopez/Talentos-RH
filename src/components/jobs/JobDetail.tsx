@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Detalle público de una vacante + sección para aplicar.
+ * Detalle de una vacante (tema oscuro) + sección para aplicar.
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { ApplySection } from "@/components/jobs/ApplySection";
-import { CompanyLogo } from "@/components/jobs/JobCard";
 import { findDemoJob } from "@/lib/demoJobs"; // TEMP DEMO
 import type { JobPost } from "@/types";
 
@@ -38,8 +37,7 @@ export function JobDetail({ jobId }: { jobId: string }) {
         if (snap.exists() && snap.data().status === "open") {
           setJob(snap.data() as JobPost);
         } else {
-          // TEMP DEMO: si es una vacante demo, la mostramos desde el código.
-          const demo = findDemoJob(jobId);
+          const demo = findDemoJob(jobId); // TEMP DEMO
           if (demo) setJob(demo);
           else setNotFound(true);
         }
@@ -54,13 +52,13 @@ export function JobDetail({ jobId }: { jobId: string }) {
     };
   }, [jobId]);
 
-  if (loading) return <p className="text-gray-500">Cargando…</p>;
+  if (loading) return <p className="text-slate-400">Cargando…</p>;
 
   if (notFound || !job) {
     return (
       <div>
-        <p className="text-gray-600">Esta vacante no está disponible.</p>
-        <Link href="/jobs" className="mt-2 inline-block text-brand-600 hover:underline">
+        <p className="text-slate-300">Esta vacante no está disponible.</p>
+        <Link href="/jobs" className="mt-2 inline-block text-[#c8f04a] hover:underline">
           ← Ver todas las vacantes
         </Link>
       </div>
@@ -70,14 +68,16 @@ export function JobDetail({ jobId }: { jobId: string }) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Link href="/jobs" className="text-sm text-brand-600 hover:underline">
+        <Link href="/jobs" className="text-sm text-[#c8f04a] hover:underline">
           ← Todas las vacantes
         </Link>
         <div className="mt-3 flex items-center gap-4">
-          <CompanyLogo name={job.companyName} size="lg" />
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#c8f04a] text-xl font-bold text-slate-900">
+            {(job.companyName || "?").charAt(0).toUpperCase()}
+          </span>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{job.title}</h1>
-            <p className="text-lg text-slate-600">{job.companyName}</p>
+            <h1 className="text-2xl font-bold text-white sm:text-3xl">{job.title}</h1>
+            <p className="text-lg text-slate-400">{job.companyName}</p>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
@@ -93,19 +93,19 @@ export function JobDetail({ jobId }: { jobId: string }) {
         </div>
       </div>
 
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
-        <h2 className="mb-2 font-semibold text-gray-900">Descripción</h2>
-        <p className="whitespace-pre-wrap text-gray-700">{job.description}</p>
+      <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+        <h2 className="mb-2 font-semibold text-white">Descripción</h2>
+        <p className="whitespace-pre-wrap text-slate-300">{job.description}</p>
       </section>
 
       {(job.requiredSkills ?? []).length > 0 && (
-        <section className="rounded-xl border border-gray-200 bg-white p-5">
-          <h2 className="mb-3 font-semibold text-gray-900">Habilidades requeridas</h2>
+        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+          <h2 className="mb-3 font-semibold text-white">Habilidades requeridas</h2>
           <div className="flex flex-wrap gap-2">
             {job.requiredSkills.map((s) => (
               <span
                 key={s}
-                className="rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-700"
+                className="rounded-full bg-[#c8f04a]/15 px-3 py-1 text-sm text-[#c8f04a]"
               >
                 {s}
               </span>
@@ -121,6 +121,8 @@ export function JobDetail({ jobId }: { jobId: string }) {
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-600">{children}</span>
+    <span className="rounded-full border border-slate-700 px-3 py-1 text-slate-300">
+      {children}
+    </span>
   );
 }

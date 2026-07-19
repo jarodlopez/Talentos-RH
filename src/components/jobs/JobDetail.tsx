@@ -9,6 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { ApplySection } from "@/components/jobs/ApplySection";
+import { CompanyLogo } from "@/components/jobs/JobCard";
 import type { JobPost } from "@/types";
 
 const WORK_MODE_LABEL: Record<string, string> = {
@@ -68,9 +69,14 @@ export function JobDetail({ jobId }: { jobId: string }) {
         <Link href="/jobs" className="text-sm text-brand-600 hover:underline">
           ← Todas las vacantes
         </Link>
-        <h1 className="mt-2 text-3xl font-bold">{job.title}</h1>
-        <p className="mt-1 text-lg text-gray-600">{job.companyName}</p>
-        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+        <div className="mt-3 flex items-center gap-4">
+          <CompanyLogo name={job.companyName} size="lg" />
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{job.title}</h1>
+            <p className="text-lg text-slate-600">{job.companyName}</p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2 text-sm">
           <Tag>{WORK_MODE_LABEL[job.workMode] ?? job.workMode}</Tag>
           <Tag>{TYPE_LABEL[job.employmentType] ?? job.employmentType}</Tag>
           {job.location && <Tag>📍 {job.location}</Tag>}

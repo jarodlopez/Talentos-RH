@@ -55,6 +55,7 @@ export interface Candidate {
   fullName: string;
   headline: string;
   location: string;
+  country: string | null; // código de país (Centroamérica)
   phone: string;
   summary: string;
   skills: string[];
@@ -73,6 +74,7 @@ export interface Employer {
   uid: string;
   companyName: string;
   companyLogo: string | null;
+  country: string | null; // código de país (Centroamérica)
   industry: string;
   website: string;
   description: string;
@@ -108,6 +110,7 @@ export interface JobPost {
   title: string;
   description: string;
   location: string;
+  country: string | null; // código de país (Centroamérica)
   workMode: WorkMode;
   employmentType: EmploymentType;
   salaryRange: SalaryRange | null;

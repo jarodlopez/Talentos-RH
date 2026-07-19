@@ -15,6 +15,7 @@ import { JobsExplorer } from "@/components/jobs/JobsExplorer";
 export function CandidateHome() {
   const { firebaseUser, appUser } = useAuth();
   const [completeness, setCompleteness] = useState<number | null>(null);
+  const [country, setCountry] = useState("");
 
   useEffect(() => {
     if (!firebaseUser) return;
@@ -28,6 +29,7 @@ export function CandidateHome() {
           setCompleteness(
             snap.exists() ? Number(snap.data().profileCompleteness ?? 0) : 0
           );
+          if (snap.exists() && snap.data().country) setCountry(snap.data().country);
         }
       } catch {
         if (active) setCompleteness(0);
@@ -63,7 +65,7 @@ export function CandidateHome() {
         )}
 
         <div className="mt-6">
-          <JobsExplorer />
+          <JobsExplorer defaultCountry={country} />
         </div>
       </div>
     </div>

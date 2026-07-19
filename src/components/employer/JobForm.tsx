@@ -19,6 +19,8 @@ import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useEmployerProfile } from "@/hooks/useEmployerProfile";
+import { CountrySelect } from "@/components/shared/CountrySelect";
+import { currencyOf, getCountry } from "@/lib/countries";
 import type {
   EmploymentType,
   JobStatus,
@@ -44,10 +46,10 @@ export function JobForm({ jobId }: { jobId?: string }) {
   const [location, setLocation] = useState("");
   const [workMode, setWorkMode] = useState<WorkMode>("remote");
   const [employmentType, setEmploymentType] = useState<EmploymentType>("full-time");
+  const [country, setCountry] = useState("");
   const [includeSalary, setIncludeSalary] = useState(false);
   const [salaryMin, setSalaryMin] = useState("");
   const [salaryMax, setSalaryMax] = useState("");
-  const [currency, setCurrency] = useState("MXN");
   const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
   const [questions, setQuestions] = useState<SituationalQuestion[]>([]);
@@ -75,11 +77,11 @@ export function JobForm({ jobId }: { jobId?: string }) {
           setRequiredSkills(Array.isArray(d.requiredSkills) ? d.requiredSkills : []);
           setQuestions(Array.isArray(d.situationalQuestions) ? d.situationalQuestions : []);
           setStatus(d.status ?? "draft");
+          setCountry(d.country ?? "");
           if (d.salaryRange) {
             setIncludeSalary(true);
             setSalaryMin(String(d.salaryRange.min ?? ""));
             setSalaryMax(String(d.salaryRange.max ?? ""));
-            setCurrency(d.salaryRange.currency ?? "MXN");
           }
         } else {
           setError("Vacante no encontrada.");
@@ -95,6 +97,13 @@ export function JobForm({ jobId }: { jobId?: string }) {
     };
   }, [isEdit, jobId]);
 
+  // Al crear, el país de la vacante hereda el del empleador por defecto.
+  useEffect(() => {
+    if (!isEdit && !country && employer?.country) setCountry(employer.country);
+  }, [isEdit, country, employer]);
+
+  const currency = currencyOf(country);
+
   function addSkill() {
     const s = skillInput.trim();
     if (s && !requiredSkills.includes(s)) setRequiredSkills([...requiredSkills, s]);
@@ -106,6 +115,10 @@ export function JobForm({ jobId }: { jobId?: string }) {
 
     if (!title.trim() || !description.trim()) {
       setError("El título y la descripción son obligatorios.");
+      return;
+    }
+    if (!country) {
+      setError("Selecciona el país de la vacante.");
       return;
     }
     const validQuestions = questions.filter((q) => q.question.trim() !== "");
@@ -131,6 +144,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
         title: title.trim(),
         description: description.trim(),
         location: location.trim(),
+        country,
         workMode,
         employmentType,
         salaryRange:
@@ -183,8 +197,20 @@ export function JobForm({ jobId }: { jobId?: string }) {
           onChange={setDescription}
           placeholder="Responsabilidades, requisitos, sobre el equipo…"
         />
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <Field label="Ubicación" value={location} onChange={setLocation} />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="flex flex-col gap-1.5">
+            <span className="label">País</span>
+            <CountrySelect
+              value={country}
+              onChange={setCountry}
+              includeAll
+              allLabel="Selecciona el país…"
+              className="w-full"
+            />
+          </label>
+          <Field label="Ubicación / ciudad" value={location} onChange={setLocation} />
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Select
             label="Modalidad"
             value={workMode}
@@ -218,10 +244,16 @@ export function JobForm({ jobId }: { jobId?: string }) {
           Incluir rango salarial
         </label>
         {includeSalary && (
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid items-end gap-4 sm:grid-cols-3">
             <Field label="Mínimo" type="number" value={salaryMin} onChange={setSalaryMin} />
             <Field label="Máximo" type="number" value={salaryMax} onChange={setSalaryMax} />
-            <Field label="Moneda" value={currency} onChange={setCurrency} />
+            <div className="flex flex-col gap-1.5">
+              <span className="label">Divisa</span>
+              <div className="rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2.5 text-sm text-slate-300">
+                {currency}
+                {getCountry(country) ? ` · ${getCountry(country)!.symbol}` : ""}
+              </div>
+            </div>
           </div>
         )}
       </Card>

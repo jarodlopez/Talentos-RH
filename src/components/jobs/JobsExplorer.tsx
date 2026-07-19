@@ -10,6 +10,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { JobColorCard } from "@/components/jobs/JobColorCard";
+import { CountrySelect } from "@/components/shared/CountrySelect";
 import { DEMO_JOBS } from "@/lib/demoJobs"; // TEMP DEMO
 import type { JobPost, WorkMode } from "@/types";
 
@@ -22,12 +23,18 @@ const TABS: { key: ModeFilter; label: string }[] = [
   { key: "onsite", label: "Presencial" },
 ];
 
-export function JobsExplorer() {
+export function JobsExplorer({ defaultCountry = "" }: { defaultCountry?: string }) {
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<ModeFilter>("all");
+  const [country, setCountry] = useState(defaultCountry);
+
+  // Sincroniza el país cuando llega el del usuario (async).
+  useEffect(() => {
+    if (defaultCountry) setCountry(defaultCountry);
+  }, [defaultCountry]);
 
   useEffect(() => {
     let active = true;
@@ -57,15 +64,16 @@ export function JobsExplorer() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return jobs.filter((j) => {
+      const matchesCountry = !country || j.country === country;
       const matchesMode = filter === "all" || j.workMode === filter;
       const matchesSearch =
         !q ||
         j.title.toLowerCase().includes(q) ||
         j.companyName.toLowerCase().includes(q) ||
         (j.requiredSkills ?? []).some((s) => s.toLowerCase().includes(q));
-      return matchesMode && matchesSearch;
+      return matchesCountry && matchesMode && matchesSearch;
     });
-  }, [jobs, search, filter]);
+  }, [jobs, search, filter, country]);
 
   return (
     <div>
@@ -86,8 +94,14 @@ export function JobsExplorer() {
         ))}
       </div>
 
-      {/* Buscador */}
-      <div className="mt-4 flex gap-2">
+      {/* Buscador + país */}
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <CountrySelect
+          value={country}
+          onChange={setCountry}
+          includeAll
+          allLabel="🌎 Todos los países"
+        />
         <div className="relative flex-1">
           <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

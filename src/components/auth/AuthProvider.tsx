@@ -45,8 +45,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   /** Inicia sesión con Google. Devuelve si el usuario aún no tiene rol asignado. */
   loginWithGoogle: () => Promise<{ needsRole: boolean }>;
-  /** Crea el perfil del usuario actual con el rol elegido (flujo Google nuevo). */
-  assignRole: (role: PublicRole) => Promise<AppUser>;
+  /** Crea el perfil del usuario actual con el rol y país elegidos (flujo Google nuevo). */
+  assignRole: (role: PublicRole, country?: string) => Promise<AppUser>;
   logout: () => Promise<void>;
 }
 
@@ -75,7 +75,8 @@ async function createUserDocuments(
   user: User,
   displayName: string,
   email: string,
-  role: PublicRole
+  role: PublicRole,
+  country: string | null = null
 ): Promise<AppUser> {
   const db = getDb();
 
@@ -99,6 +100,7 @@ async function createUserDocuments(
       fullName: displayName,
       headline: "",
       location: "",
+      country,
       phone: "",
       summary: "",
       skills: [],
@@ -114,6 +116,7 @@ async function createUserDocuments(
       uid: user.uid,
       companyName: displayName,
       companyLogo: null,
+      country,
       industry: "",
       website: "",
       description: "",
@@ -210,7 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { needsRole: true };
   }
 
-  async function assignRole(role: PublicRole): Promise<AppUser> {
+  async function assignRole(role: PublicRole, country?: string): Promise<AppUser> {
     const auth = getFirebaseAuth();
     const user = auth.currentUser;
     if (!user) throw new Error("No hay usuario autenticado.");
@@ -218,7 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const displayName = user.displayName ?? user.email ?? "Usuario";
     const email = user.email ?? "";
 
-    const created = await createUserDocuments(user, displayName, email, role);
+    const created = await createUserDocuments(user, displayName, email, role, country ?? null);
 
     const token = await user.getIdToken();
     setCookie("tp_session", token);

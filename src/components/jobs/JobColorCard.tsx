@@ -52,7 +52,8 @@ function postedAgo(v: unknown): string | null {
 
 function shortSalary(job: JobPost): string | null {
   if (!job.salaryRange) return null;
-  const k = (n: number) => (n >= 1000 ? `${Math.round(n / 1000)}K` : `${n}`);
+  const k = (n: number) =>
+    n >= 10000 ? `${Math.round(n / 1000)}K` : n.toLocaleString("es");
   const { currency, min, max } = job.salaryRange;
   return `${currency} ${k(min)}–${k(max)}`;
 }

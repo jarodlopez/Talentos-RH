@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { CountrySelect } from "@/components/shared/CountrySelect";
 import type { UserRole } from "@/types";
 
 type PublicRole = Exclude<UserRole, "admin">;
@@ -16,6 +17,7 @@ export default function CompleteProfilePage() {
   const router = useRouter();
   const { loading, firebaseUser, role, assignRole } = useAuth();
   const [selected, setSelected] = useState<PublicRole>("candidate");
+  const [country, setCountry] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,9 +36,13 @@ export default function CompleteProfilePage() {
 
   async function handleContinue() {
     setError(null);
+    if (!country) {
+      setError("Selecciona tu país.");
+      return;
+    }
     setSubmitting(true);
     try {
-      const created = await assignRole(selected);
+      const created = await assignRole(selected, country);
       router.replace(
         created.role === "employer" ? "/employer/dashboard" : "/candidate/dashboard"
       );
@@ -83,6 +89,17 @@ export default function CompleteProfilePage() {
             publicar vacantes.
           </p>
         )}
+
+        <div className="mt-5">
+          <label className="label mb-1.5 block">País</label>
+          <CountrySelect
+            value={country}
+            onChange={setCountry}
+            includeAll
+            allLabel="Selecciona tu país…"
+            className="w-full"
+          />
+        </div>
 
         {error && (
           <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">

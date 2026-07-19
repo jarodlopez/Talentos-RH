@@ -11,6 +11,7 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { CountrySelect } from "@/components/shared/CountrySelect";
 
 interface ExperienceForm {
   company: string;
@@ -54,6 +55,7 @@ export function MasterProfileForm() {
   const [fullName, setFullName] = useState("");
   const [headline, setHeadline] = useState("");
   const [location, setLocation] = useState("");
+  const [country, setCountry] = useState("");
   const [phone, setPhone] = useState("");
   const [summary, setSummary] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
@@ -80,6 +82,7 @@ export function MasterProfileForm() {
           setFullName(d.fullName ?? appUser?.displayName ?? "");
           setHeadline(d.headline ?? "");
           setLocation(d.location ?? "");
+          setCountry(d.country ?? "");
           setPhone(d.phone ?? "");
           setSummary(d.summary ?? "");
           setSkills(Array.isArray(d.skills) ? d.skills : []);
@@ -149,6 +152,7 @@ export function MasterProfileForm() {
           fullName: fullName.trim(),
           headline: headline.trim(),
           location: location.trim(),
+          country: country || null,
           phone: phone.trim(),
           summary: summary.trim(),
           skills,
@@ -180,6 +184,7 @@ export function MasterProfileForm() {
     fullName,
     headline,
     location,
+    country,
     phone,
     summary,
     skills,
@@ -246,6 +251,16 @@ export function MasterProfileForm() {
           />
           <Field label="Ubicación" value={location} onChange={setLocation} />
           <Field label="Teléfono" value={phone} onChange={setPhone} />
+          <label className="flex flex-col gap-1.5">
+            <span className="label">País</span>
+            <CountrySelect
+              value={country}
+              onChange={setCountry}
+              includeAll
+              allLabel="Selecciona tu país…"
+              className="w-full"
+            />
+          </label>
         </div>
         <TextArea
           label="Resumen / bio"

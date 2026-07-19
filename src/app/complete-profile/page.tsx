@@ -49,16 +49,16 @@ export default function CompleteProfilePage() {
   if (loading || !firebaseUser || role) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">Cargando…</p>
+        <p className="text-slate-400">Cargando…</p>
       </main>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-1 text-2xl font-bold">Un último paso</h1>
-        <p className="mb-6 text-sm text-gray-500">
+    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-4">
+      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-sm">
+        <h1 className="mb-1 text-2xl font-bold text-white">Un último paso</h1>
+        <p className="mb-6 text-sm text-slate-400">
           ¿Cómo vas a usar Talentos-RH?
         </p>
 
@@ -93,7 +93,7 @@ export default function CompleteProfilePage() {
         <button
           onClick={handleContinue}
           disabled={submitting}
-          className="mt-6 w-full rounded-lg bg-brand-600 px-4 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
+          className="mt-6 w-full rounded-lg bg-[#c8f04a] px-4 py-2.5 font-medium text-slate-900 transition hover:brightness-95 disabled:opacity-60"
         >
           {submitting ? "Creando perfil…" : "Continuar"}
         </button>
@@ -118,11 +118,11 @@ function RoleCard({
       type="button"
       onClick={onClick}
       className={`rounded-xl border-2 p-3 text-left transition ${
-        active ? "border-brand-600 bg-brand-50" : "border-gray-200 hover:border-gray-300"
+        active ? "border-[#c8f04a] bg-[#c8f04a]/15" : "border-slate-800 hover:border-slate-700"
       }`}
     >
-      <span className="block font-semibold text-gray-900">{title}</span>
-      <span className="block text-xs text-gray-500">{subtitle}</span>
+      <span className="block font-semibold text-white">{title}</span>
+      <span className="block text-xs text-slate-400">{subtitle}</span>
     </button>
   );
 }

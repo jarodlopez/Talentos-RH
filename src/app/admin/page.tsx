@@ -18,20 +18,20 @@ export default function AdminPage() {
 
   return (
     <AdminGuard>
-      <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+      <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-4">
         <div>
-          <span className="text-xs font-medium uppercase tracking-wide text-brand-600">
+          <span className="text-xs font-medium uppercase tracking-wide text-[#c8f04a]">
             Super Admin
           </span>
-          <p className="text-sm text-gray-700">Gestión de usuarios y permisos</p>
+          <p className="text-sm text-slate-300">Gestión de usuarios y permisos</p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-sm text-gray-500 hover:underline">
+          <Link href="/" className="text-sm text-slate-400 hover:underline">
             Ir al sitio
           </Link>
           <button
             onClick={handleLogout}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
           >
             Cerrar sesión
           </button>

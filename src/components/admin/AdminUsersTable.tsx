@@ -81,13 +81,13 @@ export function AdminUsersTable() {
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 rounded-lg border border-gray-200 p-1">
+        <div className="flex gap-1 rounded-lg border border-slate-800 p-1">
           {(["all", "candidate", "employer", "pending"] as Filter[]).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
-                filter === f ? "bg-brand-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                filter === f ? "bg-[#c8f04a] text-slate-900" : "text-slate-400 hover:bg-slate-800"
               }`}
             >
               {f === "all"
@@ -104,11 +104,11 @@ export function AdminUsersTable() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre o correo…"
-          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
+          className="flex-1 rounded-lg border border-slate-700 px-3 py-2 text-sm outline-none focus:border-[#c8f04a]"
         />
         <button
           onClick={load}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
         >
           Refrescar
         </button>
@@ -119,13 +119,13 @@ export function AdminUsersTable() {
       )}
 
       {loading ? (
-        <p className="text-gray-500">Cargando usuarios…</p>
+        <p className="text-slate-400">Cargando usuarios…</p>
       ) : filtered.length === 0 ? (
-        <p className="text-gray-500">No hay usuarios que coincidan.</p>
+        <p className="text-slate-400">No hay usuarios que coincidan.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <div className="overflow-x-auto rounded-xl border border-slate-800">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-500">
+            <thead className="bg-slate-800 text-xs uppercase text-slate-400">
               <tr>
                 <th className="px-4 py-3">Usuario</th>
                 <th className="px-4 py-3">Rol</th>
@@ -133,17 +133,17 @@ export function AdminUsersTable() {
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-800">
               {filtered.map((u) => (
                 <tr key={u.uid} className={u.disabled ? "bg-red-50/40" : ""}>
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/users/${u.uid}`}
-                      className="font-medium text-brand-700 hover:underline"
+                      className="font-medium text-[#c8f04a] hover:underline"
                     >
                       {u.displayName || "(sin nombre)"}
                     </Link>
-                    <div className="text-xs text-gray-500">{u.email}</div>
+                    <div className="text-xs text-slate-400">{u.email}</div>
                   </td>
                   <td className="px-4 py-3 capitalize">{u.role}</td>
                   <td className="px-4 py-3">
@@ -200,7 +200,7 @@ function Badge({
     red: "bg-red-100 text-red-700",
     green: "bg-emerald-100 text-emerald-700",
     amber: "bg-amber-100 text-amber-700",
-    gray: "bg-gray-100 text-gray-600",
+    gray: "bg-slate-800 text-slate-400",
   };
   return (
     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${colors[color]}`}>
@@ -227,7 +227,7 @@ function ActionButton({
       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 ${
         danger
           ? "border-red-300 text-red-700 hover:bg-red-50"
-          : "border-gray-300 text-gray-700 hover:bg-gray-50"
+          : "border-slate-700 text-slate-300 hover:bg-slate-800"
       }`}
     >
       {children}

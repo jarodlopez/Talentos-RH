@@ -17,7 +17,7 @@ const STATUS_LABEL: Record<string, { label: string; className: string }> = {
   evaluated: { label: "Evaluada", className: "bg-blue-100 text-blue-700" },
   reviewed: { label: "Revisada", className: "bg-indigo-100 text-indigo-700" },
   shortlisted: { label: "Preseleccionado", className: "bg-emerald-100 text-emerald-700" },
-  rejected: { label: "No seleccionado", className: "bg-gray-100 text-gray-600" },
+  rejected: { label: "No seleccionado", className: "bg-slate-800 text-slate-400" },
 };
 
 export function CandidateApplicationsList() {
@@ -49,16 +49,16 @@ export function CandidateApplicationsList() {
     };
   }, [firebaseUser]);
 
-  if (loading) return <p className="text-gray-500">Cargando…</p>;
+  if (loading) return <p className="text-slate-400">Cargando…</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   if (apps.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center">
-        <p className="text-gray-600">Aún no has aplicado a ninguna vacante.</p>
+      <div className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-center">
+        <p className="text-slate-400">Aún no has aplicado a ninguna vacante.</p>
         <Link
           href="/jobs"
-          className="mt-3 inline-block rounded-lg bg-brand-600 px-5 py-2.5 font-medium text-white hover:bg-brand-700"
+          className="mt-3 inline-block rounded-lg bg-[#c8f04a] px-5 py-2.5 font-medium text-slate-900 hover:brightness-95"
         >
           Ver vacantes
         </Link>
@@ -73,10 +73,10 @@ export function CandidateApplicationsList() {
         return (
           <div
             key={app.applicationId}
-            className="rounded-xl border border-gray-200 bg-white p-5"
+            className="rounded-xl border border-slate-800 bg-slate-900 p-5"
           >
             <div className="flex items-start justify-between gap-4">
-              <h2 className="font-semibold text-gray-900">{app.jobTitle}</h2>
+              <h2 className="font-semibold text-white">{app.jobTitle}</h2>
               <span
                 className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium ${status.className}`}
               >
@@ -84,7 +84,7 @@ export function CandidateApplicationsList() {
               </span>
             </div>
             {app.aiEvaluation?.candidateFeedback && (
-              <div className="mt-3 rounded-lg bg-brand-50 p-3 text-sm text-brand-800">
+              <div className="mt-3 rounded-lg bg-[#c8f04a]/15 p-3 text-sm text-[#c8f04a]">
                 <span className="font-medium">Feedback: </span>
                 {app.aiEvaluation.candidateFeedback}
               </div>

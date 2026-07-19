@@ -39,7 +39,7 @@ export function EmployerDashboardBody() {
   return (
     <main className="mx-auto max-w-4xl p-6">
       <h1 className="text-2xl font-bold">Bienvenido a tu panel</h1>
-      <p className="mt-2 text-gray-600">
+      <p className="mt-2 text-slate-400">
         Aquí publicarás vacantes y revisarás candidatos con su score de IA.
       </p>
 
@@ -99,10 +99,10 @@ function LinkCard({
   return (
     <Link
       href={href}
-      className="card group p-5 transition hover:border-brand-300 hover:shadow-soft"
+      className="card group p-5 transition hover:border-[#c8f04a]/50 hover:shadow-soft"
     >
-      <h2 className="font-semibold text-slate-900 group-hover:text-brand-700">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{desc}</p>
+      <h2 className="font-semibold text-white group-hover:text-[#c8f04a]">{title}</h2>
+      <p className="mt-1 text-sm text-slate-400">{desc}</p>
     </Link>
   );
 }
@@ -118,8 +118,8 @@ function Card({
 }) {
   return (
     <div className={`card p-5 ${disabled ? "opacity-50" : ""}`}>
-      <h2 className="font-semibold text-slate-900">{title}</h2>
-      <p className="mt-1 text-sm text-slate-500">{desc}</p>
+      <h2 className="font-semibold text-white">{title}</h2>
+      <p className="mt-1 text-sm text-slate-400">{desc}</p>
     </div>
   );
 }

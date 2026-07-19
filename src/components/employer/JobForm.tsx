@@ -157,7 +157,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
   }
 
   if (employerLoading || loading) {
-    return <p className="text-gray-500">Cargando…</p>;
+    return <p className="text-slate-400">Cargando…</p>;
   }
 
   // Candado de UI: solo verificados pueden crear/editar.
@@ -209,7 +209,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
       </Card>
 
       <Card title="Rango salarial (opcional)">
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-slate-300">
           <input
             type="checkbox"
             checked={includeSalary}
@@ -238,12 +238,12 @@ export function JobForm({ jobId }: { jobId?: string }) {
               }
             }}
             placeholder="Agrega una habilidad y presiona Enter"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
+            className="flex-1 rounded-lg border border-slate-700 px-3 py-2 text-sm outline-none focus:border-[#c8f04a]"
           />
           <button
             type="button"
             onClick={addSkill}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
           >
             Agregar
           </button>
@@ -253,13 +253,13 @@ export function JobForm({ jobId }: { jobId?: string }) {
             {requiredSkills.map((s) => (
               <span
                 key={s}
-                className="flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-700"
+                className="flex items-center gap-1 rounded-full bg-[#c8f04a]/15 px-3 py-1 text-sm text-[#c8f04a]"
               >
                 {s}
                 <button
                   type="button"
                   onClick={() => setRequiredSkills(requiredSkills.filter((x) => x !== s))}
-                  className="text-brand-400 hover:text-brand-700"
+                  className="text-[#c8f04a] hover:text-[#c8f04a]"
                   aria-label={`Quitar ${s}`}
                 >
                   ×
@@ -271,7 +271,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
       </Card>
 
       <Card title="Preguntas situacionales">
-        <p className="mb-3 text-sm text-gray-500">
+        <p className="mb-3 text-sm text-slate-400">
           Al aplicar, se le mostrará al candidato <strong>una</strong> de estas
           preguntas elegida al azar. Añade varias para evitar respuestas copiadas.
         </p>
@@ -289,7 +289,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
                 }
                 rows={2}
                 placeholder={`Pregunta ${i + 1}`}
-                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
+                className="flex-1 rounded-lg border border-slate-700 px-3 py-2 text-sm outline-none focus:border-[#c8f04a]"
               />
               <button
                 type="button"
@@ -303,7 +303,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
           <button
             type="button"
             onClick={() => setQuestions([...questions, { id: newId(), question: "" }])}
-            className="rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 hover:border-brand-400 hover:text-brand-600"
+            className="rounded-lg border border-dashed border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-400 hover:border-[#c8f04a]/50 hover:text-[#c8f04a]"
           >
             + Añadir pregunta
           </button>
@@ -314,15 +314,15 @@ export function JobForm({ jobId }: { jobId?: string }) {
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="sticky bottom-0 flex flex-wrap items-center justify-end gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <span className="mr-auto text-sm text-gray-500">
+      <div className="sticky bottom-0 flex flex-wrap items-center justify-end gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4 shadow-sm">
+        <span className="mr-auto text-sm text-slate-400">
           Estado actual: <strong className="capitalize">{status}</strong>
         </span>
         <button
           type="button"
           disabled={saving}
           onClick={() => handleSave("draft")}
-          className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          className="rounded-lg border border-slate-700 px-5 py-2.5 font-medium text-slate-300 hover:bg-slate-800 disabled:opacity-60"
         >
           Guardar borrador
         </button>
@@ -330,7 +330,7 @@ export function JobForm({ jobId }: { jobId?: string }) {
           type="button"
           disabled={saving}
           onClick={() => handleSave("open")}
-          className="rounded-lg bg-brand-600 px-6 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:opacity-60"
+          className="rounded-lg bg-[#c8f04a] px-6 py-2.5 font-medium text-slate-900 transition hover:brightness-95 disabled:opacity-60"
         >
           {saving ? "Guardando…" : "Publicar vacante"}
         </button>
@@ -341,8 +341,8 @@ export function JobForm({ jobId }: { jobId?: string }) {
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5">
-      <h2 className="mb-4 font-semibold text-gray-900">{title}</h2>
+    <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+      <h2 className="mb-4 font-semibold text-white">{title}</h2>
       {children}
     </section>
   );
@@ -363,13 +363,13 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+      <span className="font-medium text-slate-300">{label}</span>
       <input
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="rounded-lg border border-slate-700 px-3 py-2 outline-none focus:border-[#c8f04a] focus:ring-2 focus:ring-[#c8f04a]/20"
       />
     </label>
   );
@@ -388,13 +388,13 @@ function TextArea({
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+      <span className="font-medium text-slate-300">{label}</span>
       <textarea
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         rows={5}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="rounded-lg border border-slate-700 px-3 py-2 outline-none focus:border-[#c8f04a] focus:ring-2 focus:ring-[#c8f04a]/20"
       />
     </label>
   );
@@ -413,11 +413,11 @@ function Select({
 }) {
   return (
     <label className="flex flex-col gap-1.5 text-sm">
-      <span className="font-medium text-gray-700">{label}</span>
+      <span className="font-medium text-slate-300">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-brand-500"
+        className="rounded-lg border border-slate-700 px-3 py-2 outline-none focus:border-[#c8f04a]"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

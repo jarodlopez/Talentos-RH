@@ -44,15 +44,15 @@ export default function AdminUserDetailPage() {
 
   return (
     <AdminGuard>
-      <header className="border-b border-gray-200 bg-white px-6 py-4">
-        <Link href="/admin" className="text-sm text-brand-600 hover:underline">
+      <header className="border-b border-slate-800 bg-slate-900 px-6 py-4">
+        <Link href="/admin" className="text-sm text-[#c8f04a] hover:underline">
           ← Volver a usuarios
         </Link>
       </header>
 
       <main className="mx-auto max-w-3xl p-6">
         {loading ? (
-          <p className="text-gray-500">Cargando…</p>
+          <p className="text-slate-400">Cargando…</p>
         ) : error ? (
           <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
         ) : data ? (
@@ -79,7 +79,7 @@ export default function AdminUserDetailPage() {
               {data.profile ? (
                 <DataGrid data={data.profile} />
               ) : (
-                <p className="text-sm text-gray-500">Sin perfil registrado.</p>
+                <p className="text-sm text-slate-400">Sin perfil registrado.</p>
               )}
             </Section>
           </div>
@@ -91,8 +91,8 @@ export default function AdminUserDetailPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-5">
-      <h2 className="mb-3 font-semibold text-gray-900">{title}</h2>
+    <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+      <h2 className="mb-3 font-semibold text-white">{title}</h2>
       {children}
     </section>
   );
@@ -104,8 +104,8 @@ function DataGrid({ data }: { data: Record<string, unknown> }) {
     <dl className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
       {entries.map(([key, value]) => (
         <div key={key} className="flex flex-col">
-          <dt className="text-xs uppercase tracking-wide text-gray-400">{key}</dt>
-          <dd className="break-words text-sm text-gray-800">{formatValue(value)}</dd>
+          <dt className="text-xs uppercase tracking-wide text-slate-500">{key}</dt>
+          <dd className="break-words text-sm text-slate-100">{formatValue(value)}</dd>
         </div>
       ))}
     </dl>

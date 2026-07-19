@@ -38,7 +38,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   if (status !== "ok") {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">
+        <p className="text-slate-400">
           {status === "denied" ? "Acceso denegado." : "Verificando permisos…"}
         </p>
       </main>

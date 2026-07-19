@@ -189,7 +189,7 @@ export function MasterProfileForm() {
   ]);
 
   if (loading) {
-    return <p className="text-gray-500">Cargando tu perfil…</p>;
+    return <p className="text-slate-400">Cargando tu perfil…</p>;
   }
 
   return (
@@ -223,12 +223,12 @@ export function MasterProfileForm() {
       {/* Barra de completitud */}
       <div className="card p-4">
         <div className="mb-2 flex items-center justify-between text-sm">
-          <span className="font-medium text-gray-700">Completitud del perfil</span>
-          <span className="font-semibold text-brand-700">{completeness}%</span>
+          <span className="font-medium text-slate-300">Completitud del perfil</span>
+          <span className="font-semibold text-[#c8f04a]">{completeness}%</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
           <div
-            className="h-full rounded-full bg-brand-600 transition-all"
+            className="h-full rounded-full bg-[#c8f04a] transition-all"
             style={{ width: `${completeness}%` }}
           />
         </div>
@@ -268,12 +268,12 @@ export function MasterProfileForm() {
               }
             }}
             placeholder="Agrega una habilidad y presiona Enter"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
+            className="flex-1 rounded-lg border border-slate-700 px-3 py-2 text-sm outline-none focus:border-[#c8f04a]"
           />
           <button
             type="button"
             onClick={addSkill}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
           >
             Agregar
           </button>
@@ -283,13 +283,13 @@ export function MasterProfileForm() {
             {skills.map((s) => (
               <span
                 key={s}
-                className="flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-700"
+                className="flex items-center gap-1 rounded-full bg-[#c8f04a]/15 px-3 py-1 text-sm text-[#c8f04a]"
               >
                 {s}
                 <button
                   type="button"
                   onClick={() => setSkills(skills.filter((x) => x !== s))}
-                  className="text-brand-400 hover:text-brand-700"
+                  className="text-[#c8f04a] hover:text-[#c8f04a]"
                   aria-label={`Quitar ${s}`}
                 >
                   ×
@@ -304,7 +304,7 @@ export function MasterProfileForm() {
       <Card title="Experiencia">
         <div className="flex flex-col gap-4">
           {experience.map((exp, i) => (
-            <div key={i} className="rounded-lg border border-gray-200 p-4">
+            <div key={i} className="rounded-lg border border-slate-800 p-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field
                   label="Empresa"
@@ -355,7 +355,7 @@ export function MasterProfileForm() {
       <Card title="Educación">
         <div className="flex flex-col gap-4">
           {education.map((edu, i) => (
-            <div key={i} className="rounded-lg border border-gray-200 p-4">
+            <div key={i} className="rounded-lg border border-slate-800 p-4">
               <div className="grid gap-3 sm:grid-cols-3">
                 <Field
                   label="Institución"
@@ -389,7 +389,7 @@ export function MasterProfileForm() {
       </Card>
 
       {/* Guardar */}
-      <div className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-soft backdrop-blur">
+      <div className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/95 p-4 shadow-soft backdrop-blur">
         <div className="text-sm">
           {error && <span className="text-red-600">{error}</span>}
           {!error && savedAt && (
@@ -420,7 +420,7 @@ function updateItem<T>(
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="card p-5 sm:p-6">
-      <h2 className="mb-4 font-semibold text-slate-900">{title}</h2>
+      <h2 className="mb-4 font-semibold text-white">{title}</h2>
       {children}
     </section>
   );
@@ -483,7 +483,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-lg border border-dashed border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-600 hover:border-brand-400 hover:text-brand-600"
+      className="rounded-lg border border-dashed border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-400 hover:border-[#c8f04a]/50 hover:text-[#c8f04a]"
     >
       + {label}
     </button>

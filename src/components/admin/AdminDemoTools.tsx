@@ -34,10 +34,10 @@ export function AdminDemoTools() {
   }
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4">
       <div className="mr-auto">
-        <p className="font-semibold text-slate-900">Ofertas de demostración</p>
-        <p className="text-sm text-slate-500">
+        <p className="font-semibold text-white">Ofertas de demostración</p>
+        <p className="text-sm text-slate-400">
           Genera vacantes de ejemplo para poblar la bolsa mientras pruebas.
         </p>
       </div>

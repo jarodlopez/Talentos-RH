@@ -12,6 +12,7 @@ import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { JobMatchCard } from "@/components/jobs/JobMatchCard";
+import { DEMO_JOBS } from "@/lib/demoJobs"; // TEMP DEMO
 import type { JobPost, WorkMode } from "@/types";
 
 const CATEGORIES: { mode: WorkMode; label: string; emoji: string; className: string }[] = [
@@ -40,7 +41,8 @@ export function CandidateHome() {
         if (!active) return;
         const list = jobsSnap.docs.map((d) => d.data() as JobPost);
         list.sort((a, b) => (b.applicationsCount ?? 0) - (a.applicationsCount ?? 0));
-        setJobs(list);
+        // TEMP DEMO: si no hay vacantes reales, mostramos las demo.
+        setJobs(list.length ? list : DEMO_JOBS);
         if (candSnap.exists()) {
           setSkills(Array.isArray(candSnap.data().skills) ? candSnap.data().skills : []);
           setCompleteness(Number(candSnap.data().profileCompleteness ?? 0));

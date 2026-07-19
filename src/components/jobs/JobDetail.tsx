@@ -10,6 +10,7 @@ import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { ApplySection } from "@/components/jobs/ApplySection";
 import { CompanyLogo } from "@/components/jobs/JobCard";
+import { findDemoJob } from "@/lib/demoJobs"; // TEMP DEMO
 import type { JobPost } from "@/types";
 
 const WORK_MODE_LABEL: Record<string, string> = {
@@ -37,7 +38,10 @@ export function JobDetail({ jobId }: { jobId: string }) {
         if (snap.exists() && snap.data().status === "open") {
           setJob(snap.data() as JobPost);
         } else {
-          setNotFound(true);
+          // TEMP DEMO: si es una vacante demo, la mostramos desde el código.
+          const demo = findDemoJob(jobId);
+          if (demo) setJob(demo);
+          else setNotFound(true);
         }
       } catch {
         if (active) setNotFound(true);

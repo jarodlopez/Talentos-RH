@@ -9,6 +9,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { getDb } from "@/lib/firebase/client";
 import { COLLECTIONS } from "@/lib/firebase/collections";
 import { JobCard } from "@/components/jobs/JobCard";
+import { DEMO_JOBS } from "@/lib/demoJobs"; // TEMP DEMO
 import type { JobPost, WorkMode } from "@/types";
 
 type ModeFilter = "all" | WorkMode;
@@ -39,7 +40,8 @@ export function JobBoard() {
         if (!active) return;
         const list = snap.docs.map((d) => d.data() as JobPost);
         list.sort((a, b) => (b.jobId ?? "").localeCompare(a.jobId ?? ""));
-        setJobs(list);
+        // TEMP DEMO: si no hay vacantes reales, mostramos las demo.
+        setJobs(list.length ? list : DEMO_JOBS);
       } catch {
         if (active) setError("No se pudieron cargar las vacantes.");
       } finally {

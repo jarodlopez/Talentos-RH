@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminUsersTable } from "@/components/admin/AdminUsersTable";
+import { AdminDemoTools } from "@/components/admin/AdminDemoTools";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export default function AdminPage() {
@@ -38,6 +39,7 @@ export default function AdminPage() {
       </header>
 
       <main className="mx-auto max-w-5xl p-6">
+        <AdminDemoTools />
         <h1 className="mb-6 text-2xl font-bold">Usuarios</h1>
         <AdminUsersTable />
       </main>
